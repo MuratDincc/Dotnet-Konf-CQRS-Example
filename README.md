@@ -1,6 +1,6 @@
 # .NET Core Web Api CQRS - Kafka Debezium
 
-In this project, .NET Core 8 is used, focusing on a scenario where read and write principles are completely separated. Kafka Debezium has been utilized for data consistency. This repo is the sample project for the .NET Core with CQRS training that we have uploaded on YouTube.
+In this project, .NET Core 8 is used, focusing on a scenario where read and write principles are completely separated. Kafka Debezium has been utilized for data consistency. This repo is the sample project for the 'Applying CQRS with .NET Core in Financial Technologies' presentation at Dotnet Konf 2024
 
 ## Tech Stack
 
@@ -18,6 +18,33 @@ Start with Docker Compose
 
 ```bash
   docker compose up -d
+```
+
+Debezium Connector
+
+```bash
+{
+    "name": "transaction-activity",
+    "config": {
+        "plugin.name": "pgoutput",
+        "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+        "database.hostname": "host.docker.internal",
+        "database.port": "5432",
+        "database.user": "postgres",
+        "database.password": "123456",
+        "database.dbname": "transaction_write_db",
+        "table.include.list": "public.transaction",
+        "topic.prefix": "data",
+        "decimal.handling.mode": "double",
+        "time.precision.mode": "connect",
+        "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+        "key.converter.schemas.enable": "false",
+        "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+        "value.converter.schemas.enable": "false",
+        "include.schema.changes": "false",
+        "transforms.filter.condition": "value.op == 'c' || value.op == 'u' || value.op == 'd'"
+    }
+}
 ```
 
 ## Access List
